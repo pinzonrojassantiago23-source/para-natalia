@@ -1,0 +1,458 @@
+:root{
+  --bg: #f5e8dc;
+  --ink: #4d3227;
+  --muted: rgba(77,50,39,.78);
+
+  --glass: rgba(255,255,255,.62);
+  --glass2: rgba(255,255,255,.40);
+  --stroke: rgba(255,255,255,.62);
+
+  --shadow-xl: 0 28px 80px rgba(0,0,0,.14);
+  --shadow-lg: 0 18px 55px rgba(0,0,0,.12);
+  --shadow-md: 0 12px 28px rgba(0,0,0,.10);
+  --shadow-sm: 0 10px 18px rgba(0,0,0,.07);
+
+  --radius-xl: 28px;
+  --radius-lg: 22px;
+  --radius-md: 18px;
+  --radius-sm: 14px;
+
+  --ease: cubic-bezier(.2,.9,.2,1);
+
+  /* Siluetas (pon el archivo en img/siluetas.png) */
+  --silhouette: url("./img/siluetas.png");
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  font-family: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, "Georgia", serif;
+  color: var(--ink);
+
+  background:
+    radial-gradient(900px 720px at 72% 26%, rgba(255,255,255,.92) 0%, rgba(255,255,255,.65) 24%, rgba(255,255,255,0) 58%),
+    radial-gradient(1200px 900px at 70% 30%, #ffffff 0%, var(--bg) 45%, #f1ddcb 100%);
+}
+
+@media (min-width: 901px){
+  body{ overflow:hidden; }
+}
+
+/* ===== Scene Layout ===== */
+.scene{
+  display:grid;
+  grid-template-columns: 1.05fr 1.2fr;
+  height:100vh;
+  gap: clamp(16px, 3vw, 36px);
+  align-items: center;
+
+  padding:
+    calc(clamp(18px, 3vw, 44px) + env(safe-area-inset-top))
+    calc(clamp(18px, 3vw, 44px) + env(safe-area-inset-right))
+    calc(clamp(18px, 3vw, 44px) + env(safe-area-inset-bottom))
+    calc(clamp(18px, 3vw, 44px) + env(safe-area-inset-left));
+}
+
+/* ===== Left Panel ===== */
+.left{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  max-width: 580px;
+}
+
+.label{
+  font-size: 12px;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  opacity:.75;
+  margin-bottom: 10px;
+}
+
+h1{
+  margin:0 0 14px 0;
+  font-size: clamp(36px, 5vw, 58px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+.typed{
+  margin: 6px 0 18px 0;
+  font-size: clamp(16px, 2.2vw, 20px);
+  line-height: 1.62;
+  color: var(--muted);
+  min-height: 120px;
+  white-space: pre-wrap;
+  text-wrap: pretty;
+}
+
+/* ===== Counter ===== */
+.counter{
+  margin-top: 12px;
+  padding: 14px 16px;
+  background: var(--glass);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(12px);
+}
+
+.counter-title{
+  font-size: 13px;
+  opacity:.86;
+  margin-bottom: 8px;
+}
+
+.time{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: clamp(16px, 2.2vw, 20px);
+  letter-spacing: .02em;
+}
+
+/* ===== Buttons ===== */
+.actions{
+  display:flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.btn{
+  border: none;
+  padding: 11px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(77,50,39,.94);
+  color: white;
+  cursor:pointer;
+  box-shadow: 0 12px 26px rgba(77,50,39,.20);
+  transition: transform .16s var(--ease), box-shadow .16s var(--ease), opacity .16s var(--ease);
+  user-select:none;
+}
+
+.btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 18px 34px rgba(77,50,39,.22);
+}
+
+.btn:active{ transform: scale(.985); }
+.btn:disabled{ opacity:.45; cursor:not-allowed; }
+
+.btn-ghost{
+  background: rgba(255,255,255,.62);
+  color: var(--ink);
+  border: 1px solid rgba(255,255,255,.72);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(12px);
+}
+
+.footer-note{
+  margin-top: 18px;
+  font-size: 12px;
+  opacity:.65;
+}
+
+/* ===== Focus visible ===== */
+:focus-visible{
+  outline: 3px solid rgba(255,105,180,.35);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+/* ===== Right Panel Canvas ===== */
+.right{
+  position:relative;
+  border-radius: var(--radius-xl);
+  overflow:hidden;
+  background: var(--glass2);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--stroke);
+
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: radial-gradient(white, black);
+
+  /* Para que overlays no dañen clics */
+  isolation: isolate;
+}
+
+#canvas{
+  position: relative;
+  z-index: 1;
+  display:block;
+  width:100%;
+  height:100%;
+  filter: drop-shadow(0 24px 30px rgba(0,0,0,.10));
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* ===== Siluetas (NUEVO) ===== */
+.right::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index: 2;
+  pointer-events:none;
+
+  /* Imagen centrada abajo, un poquito más hacia el centro */
+  background-image: var(--silhouette);
+  background-repeat: no-repeat;
+  background-position: 52% 82%;
+  background-size: min(520px, 78%);
+  opacity: .24;
+
+  /* Que se vea elegante sobre el canvas */
+  filter: blur(.2px) drop-shadow(0 18px 22px rgba(0,0,0,.10));
+  mix-blend-mode: multiply;
+}
+
+/* Un brillo suave detrás de las siluetas */
+.right::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index: 0;
+  pointer-events:none;
+
+  background:
+    radial-gradient(480px 360px at 54% 70%, rgba(255, 95, 150, .16), rgba(255,255,255,0) 62%),
+    radial-gradient(540px 420px at 50% 54%, rgba(255,255,255,.55), rgba(255,255,255,0) 70%);
+}
+
+.ground{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height: 22%;
+  z-index: 3;
+  background: linear-gradient(to top, rgba(77,50,39,.12), rgba(77,50,39,0));
+  pointer-events:none;
+}
+
+/* ===== Intro Overlay ===== */
+.intro{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(0,0,0,.28);
+  backdrop-filter: blur(10px);
+  z-index: 9999; /* SIEMPRE encima */
+}
+
+.intro-card{
+  width:min(560px, 92vw);
+  background: rgba(255,255,255,.72);
+  border: 1px solid rgba(255,255,255,.70);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  padding: 22px 18px;
+  text-align:center;
+  animation: popIn .45s var(--ease) both;
+
+  will-change: transform, opacity;
+}
+
+@keyframes popIn{
+  from{ opacity:0; transform: translateY(10px) scale(.98); }
+  to{ opacity:1; transform: translateY(0) scale(1); }
+}
+
+.intro-title{
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.intro-sub{
+  font-size: 14px;
+  opacity:.78;
+  margin-bottom: 14px;
+}
+
+.intro-actions{
+  display:flex;
+  gap: 10px;
+  justify-content:center;
+  flex-wrap: wrap;
+}
+
+.intro-hint{
+  margin-top: 10px;
+  font-size: 12px;
+  opacity:.65;
+}
+
+/* ===== Gallery ===== */
+.gallery{
+  margin-top: 14px;
+  padding: 14px 14px 12px;
+  background: rgba(255,255,255,.62);
+  border: 1px solid rgba(255,255,255,.72);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(12px);
+  animation: fadeUp .55s var(--ease) both;
+}
+
+.hidden{ display:none; }
+
+@keyframes fadeUp{
+  from{ opacity:0; transform: translateY(12px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+
+.slider-wrap{
+  display:grid;
+  grid-template-columns: 44px 1fr 44px;
+  gap: 12px;
+  align-items:center;
+}
+
+.navbtn{
+  height: 46px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,.72);
+  background: rgba(255,255,255,.64);
+  cursor:pointer;
+  font-size: 30px;
+  color: rgba(77,50,39,.92);
+  box-shadow: var(--shadow-sm);
+}
+
+.slider{
+  display:flex;
+  overflow-x:auto;
+  scroll-snap-type: x mandatory;
+  gap: 12px;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  scrollbar-width: none;
+}
+
+.slider::-webkit-scrollbar{ display:none; }
+
+.slide{
+  scroll-snap-align: center;
+  min-width: 78%;
+  height: 250px;
+  border-radius: var(--radius-md);
+  overflow:hidden;
+  position:relative;
+  box-shadow: 0 16px 34px rgba(0,0,0,.12);
+}
+
+.slide img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  transform: scale(1.03);
+}
+
+.caption{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  padding: 12px;
+  background: linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0));
+  color: white;
+  font-size: 12px;
+}
+
+/* ===== Dots ===== */
+.dots{
+  display:flex;
+  justify-content:center;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.dot{
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(77,50,39,.30);
+  background: rgba(255,255,255,.62);
+}
+
+.dot.active{
+  background: rgba(77,50,39,.90);
+}
+
+/* ===== Final Glow (cinematic ending) ===== */
+body.final-glow .right{
+  box-shadow: 0 34px 110px rgba(255, 60, 120, .16), var(--shadow-xl);
+  border-color: rgba(255,255,255,.78);
+}
+
+body.final-glow #canvas{
+  filter:
+    drop-shadow(0 26px 34px rgba(0,0,0,.10))
+    drop-shadow(0 0 22px rgba(255, 70, 140, .10));
+}
+
+/* ===== Selection ===== */
+::selection{
+  background: rgba(255,105,180,.22);
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 900px){
+  body{ overflow:auto; }
+
+  .scene{
+    grid-template-columns: 1fr;
+    height:auto;
+    min-height:100vh;
+    align-items:start;
+  }
+
+  .right{ height: 56vh; }
+
+  .slide{
+    min-width: 86%;
+    height: 235px;
+  }
+
+  /* Siluetas un poquito más grandes en celular */
+  .right::before{
+    background-size: min(560px, 92%);
+    opacity: .20;
+    background-position: 50% 84%;
+  }
+}
+
+/* ============================= */
+/*  SILUETAS SOBRE EL CANVAS     */
+/* ============================= */
+.right{
+  position: relative;
+  isolation: isolate;
+}
+
+#canvas{
+  position: relative;
+  z-index: 1;
+}
+
+.siluetas{
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
+  width: min(560px, 86%);
+  height: auto;
+
+  z-index: 6;
+  pointer-events: none;
+
+  opacity: 0.42;
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 18px 22px rgba(0,0,0,.14));
+}
+
+.ground{
+  z-index: 4;
+}
+
+.right::before{ content:none !important; }
+
